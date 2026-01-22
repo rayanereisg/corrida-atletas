@@ -1,97 +1,94 @@
 let atletas = JSON.parse(localStorage.getItem('atletas')) || [];
 
-// Menu navigation
+// navegação
 document.querySelectorAll('.menu-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const section = this.getAttribute('data-section');
-        showSection(section);
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.section + '-section').classList.add('active');
     });
 });
 
-function showSection(sectionId) {
-    // Hide all sections
-    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-    document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
-    
-    // Show selected section
-    document.getElementById(sectionId + '-section').classList.add('active');
-    document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
-}
-
-document.getElementById('cadastro-form').addEventListener('submit', function(e) {
+// cadastro
+document.getElementById('cadastro-form').addEventListener('submit', e => {
     e.preventDefault();
-    const nome = document.getElementById('nome').value;
-    const numeroPeito = document.getElementById('numero-peito').value;
-    const categoria = document.getElementById('categoria').value;
-    const distancia = document.getElementById('distancia').value;
 
-    // Verificar unicidade do número de peito
-    if (atletas.some(atleta => atleta.numeroPeito == numeroPeito)) {
-        alert('Número de peito já cadastrado. Escolha outro.');
+    const nome = nomeInput.value;
+    const numeroPeito = numeroPeitoInput.value;
+    const categoria = categoria.value;
+    const distancia = distancia.value;
+
+    if (atletas.some(a => a.numeroPeito == numeroPeito)) {
+        alert('Número de peito já existe');
         return;
     }
 
     atletas.push({ nome, numeroPeito, categoria, distancia, tempo: null });
     localStorage.setItem('atletas', JSON.stringify(atletas));
+
     atualizarLista();
     atualizarTempos();
-    document.getElementById('nome').value = '';
-    document.getElementById('numero-peito').value = '';
-    document.getElementById('categoria').value = '';
-    document.getElementById('distancia').value = '';
+    e.target.reset();
 });
 
+const nomeInput = document.getElementById('nome');
+const numeroPeitoInput = document.getElementById('numero-peito');
+
+// lista
 function atualizarLista() {
     const lista = document.getElementById('lista-atletas');
     lista.innerHTML = '';
-    atletas.forEach((atleta, index) => {
+    atletas.forEach(a => {
         const li = document.createElement('li');
-        li.textContent = `${atleta.nome} - Número: ${atleta.numeroPeito}${atleta.categoria ? ` - Categoria: ${atleta.categoria}` : ''}${atleta.distancia ? ` - Distância: ${atleta.distancia}` : ''}`;
+        li.textContent = `${a.nome} | Peito ${a.numeroPeito}`;
         lista.appendChild(li);
     });
 }
 
+// tempos
 function atualizarTempos() {
-    const section = document.getElementById('tempos-inputs');
-    section.innerHTML = '';
-    atletas.forEach((atleta, index) => {
-        const div = document.createElement('div');
-        div.className = 'tempo-input';
-        div.innerHTML = `
-            <label>${atleta.nome} (Número: ${atleta.numeroPeito}): Tempo (mm:ss)</label>
-            <input type="text" id="tempo-${index}" placeholder="00:00" value="${atleta.tempo || ''}">
+    const div = document.getElementById('tempos-inputs');
+    div.innerHTML = '';
+    atletas.forEach((a,i) => {
+        div.innerHTML += `
+            <div class="tempo-input">
+                <label>${a.nome} (${a.numeroPeito})</label>
+                <input type="text" id="tempo-${i}" placeholder="mm:ss">
+            </div>
         `;
-        section.appendChild(div);
     });
 }
 
-document.getElementById('finalizar').addEventListener('click', function() {
-    atletas.forEach((atleta, index) => {
-        const tempoInput = document.getElementById(`tempo-${index}`).value;
-        if (tempoInput) {
-            atleta.tempo = tempoInput;
+document.getElementById('finalizar').addEventListener('click', () => {
+    atletas.forEach((a,i) => {
+        const v = document.getElementById(`tempo-${i}`).value;
+        if (v) {
+            a.tempo = v;
+            const [m,s] = v.split(':').map(Number);
+            a.seg = m * 60 + s;
         }
     });
-    localStorage.setItem('atletas', JSON.stringify(atletas));
 
-    // Filtrar atletas com tempo
-    const comTempo = atletas.filter(a => a.tempo);
-    // Converter tempo para segundos
-    comTempo.forEach(a => {
-        const [min, sec] = a.tempo.split(':').map(Number);
-        a.tempoSeg = min * 60 + sec;
+    const ranking = atletas.filter(a => a.tempo).sort((a,b) => a.seg - b.seg).slice(0,3);
+    const res = document.getElementById('resultados');
+
+    res.innerHTML = '<div class="podio"></div>';
+    const podio = res.querySelector('.podio');
+
+    ranking.forEach((a,i) => {
+        podio.innerHTML += `
+            <div class="podio-card lugar-${i+1}">
+                <h3>${i+1}º Lugar</h3>
+                <p>${a.nome}</p>
+                <strong>${a.tempo}</strong>
+            </div>
+        `;
     });
-    // Ordenar por tempo ascendente
-    comTempo.sort((a, b) => a.tempoSeg - b.tempoSeg);
-    // Top 3
-    const top3 = comTempo.slice(0, 3);
-    const resultados = document.getElementById('resultados');
-    resultados.innerHTML = '<h3>Top 3 Colocados:</h3>';
-    top3.forEach((atleta, i) => {
-        resultados.innerHTML += `<p>${i+1}º: ${atleta.nome} - Tempo: ${atleta.tempo}</p>`;
-    });
+
+    localStorage.setItem('atletas', JSON.stringify(atletas));
 });
 
-// Inicializar
 atualizarLista();
 atualizarTempos();
