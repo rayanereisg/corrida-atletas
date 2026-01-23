@@ -66,10 +66,28 @@ const numeroPeitoInput = document.getElementById('numero-peito');
 function atualizarLista() {
     const lista = document.getElementById('lista-atletas');
     lista.innerHTML = '';
-    // Para cada atleta, cria um item de lista
-    atletas.forEach(a => {
+    // Para cada atleta, cria um item de lista com botão de excluir
+    atletas.forEach((a, i) => {
         const li = document.createElement('li');
-        li.textContent = `${a.nome} | Nº Peito: ${a.numeroPeito} | Distância: ${a.distancia}`;
+
+        const texto = document.createElement('span');
+        texto.textContent = `${a.nome} | Nº Peito: ${a.numeroPeito} | Distância: ${a.distancia}`;
+
+        const btnExcluir = document.createElement('button');
+        btnExcluir.textContent = '🗑️';
+        btnExcluir.title = 'Excluir atleta';
+        btnExcluir.className = 'btn-excluir';
+        btnExcluir.addEventListener('click', () => {
+            if (confirm(`Tem certeza que deseja excluir o atleta ${a.nome}?`)) {
+                atletas.splice(i, 1);
+                localStorage.setItem('atletas', JSON.stringify(atletas));
+                atualizarLista();
+                atualizarTempos();
+            }
+        });
+
+        li.appendChild(texto);
+        li.appendChild(btnExcluir);
         lista.appendChild(li);
     });
 }

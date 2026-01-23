@@ -94,6 +94,9 @@ li {
     padding: 12px;
     margin: 8px 0;
     border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .tempo-input {
@@ -134,6 +137,15 @@ li {
 .lugar-2 { border-top: 6px solid silver; }
 .lugar-3 { border-top: 6px solid #CD7F32; }
 
-.podio-card strong {
-    font-size: 1.3rem;
+.btn-excluir {
+    padding: 5px 10px;
+    background-color: #1d0185;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-excluir:hover {
+    background-color: #1d0185;
 }
