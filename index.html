@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corrida Municipal 5K</title>
+    <title>RunMonitor</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
@@ -11,7 +11,7 @@
 <body>
 
 <header class="header">
-    <h1>Run Monitor</h1>
+    <h1>RunMonitor</h1>
     <p>Cadastro, tempos e resultados</p>
 </header>
 
@@ -19,19 +19,19 @@
 
     <nav>
         <button class="menu-btn active" data-section="cadastro">Cadastrar Atleta</button>
-        <button class="menu-btn" data-section="atletas">Ver Atletas</button>
+        <button class="menu-btn" data-section="atletas">Ver Atletas Cadastrados</button>
         <button class="menu-btn" data-section="tempos">Registrar Tempos</button>
-        <button class="menu-btn" data-section="resultados">Resultados</button>
+        <button class="menu-btn" data-section="resultados">Mostrar Resultados</button>
     </nav>
 
     <!-- Cadastro -->
     <section id="cadastro-section" class="section active">
         <form id="cadastro-form">
             <label>Nome do Atleta</label>
-            <input type="text" id="nome" required>
+            <input type="text" id="nome">
 
             <label>Número do Peito</label>
-            <input type="number" id="numero-peito" required>
+            <input type="number" id="numero-peito">
 
             <label>Categoria</label>
             <select id="categoria">
