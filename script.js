@@ -20,7 +20,13 @@ function closeModal() {
 document.getElementById('modal-close').addEventListener('click', closeModal);
 
 // Inicializa a lista de atletas a partir do localStorage, ou uma lista vazia se não houver dados
-let atletas = JSON.parse(localStorage.getItem('atletas')) || [];
+let atletas = [];
+try {
+    atletas = JSON.parse(localStorage.getItem('atletas')) || [];
+} catch (e) {
+    console.warn('Erro ao carregar localStorage, usando array vazio:', e);
+    atletas = [];
+}
 
 // Navegação: Adiciona event listeners aos botões do menu para alternar entre seções
 document.querySelectorAll('.menu-btn').forEach(btn => {
@@ -64,7 +70,12 @@ document.getElementById('cadastro-form').addEventListener('submit', e => {
     atletas.push({ nome, numeroPeito, categoria, distancia, tempo: null });
     console.log('Atleta adicionado:', atletas[atletas.length - 1]);
     // Salva no localStorage
-    localStorage.setItem('atletas', JSON.stringify(atletas));
+    try {
+        localStorage.setItem('atletas', JSON.stringify(atletas));
+    } catch (e) {
+        console.error('Erro ao salvar no localStorage:', e);
+        showModal('Erro ao salvar dados. Os dados podem não persistir.');
+    }
 
     // Mostra mensagem de sucesso
     showModal('Atleta cadastrado com sucesso!');
@@ -79,6 +90,31 @@ document.getElementById('cadastro-form').addEventListener('submit', e => {
 // Referências aos elementos de input
 const nomeInput = document.getElementById('nome');
 const numeroPeitoInput = document.getElementById('numero-peito');
+
+// Validação em tempo real para número de peito
+numeroPeitoInput.addEventListener('input', () => {
+    const value = parseInt(numeroPeitoInput.value);
+    if (value <= 0 || isNaN(value)) {
+        numeroPeitoInput.setCustomValidity('Número de peito deve ser um número positivo.');
+        numeroPeitoInput.reportValidity();
+    } else if (atletas.some(a => a.numeroPeito == value)) {
+        numeroPeitoInput.setCustomValidity('Número de peito já existe.');
+        numeroPeitoInput.reportValidity();
+    } else {
+        numeroPeitoInput.setCustomValidity('');
+    }
+});
+
+// Validação em tempo real para nome
+nomeInput.addEventListener('input', () => {
+    const value = nomeInput.value.trim();
+    if (value === '') {
+        nomeInput.setCustomValidity('Nome é obrigatório.');
+        nomeInput.reportValidity();
+    } else {
+        nomeInput.setCustomValidity('');
+    }
+});
 
 // Lista: Função para atualizar a lista de atletas na interface
 function atualizarLista() {
@@ -100,7 +136,12 @@ function atualizarLista() {
         btnExcluir.addEventListener('click', () => {
             if (confirm(`Tem certeza que deseja excluir o atleta ${a.nome}?`)) {
                 atletas.splice(i, 1);
-                localStorage.setItem('atletas', JSON.stringify(atletas));
+                try {
+                    localStorage.setItem('atletas', JSON.stringify(atletas));
+                } catch (e) {
+                    console.error('Erro ao salvar no localStorage:', e);
+                    showModal('Erro ao salvar dados após exclusão.');
+                }
                 atualizarLista();
                 atualizarTempos();
             }
@@ -152,6 +193,10 @@ document.getElementById('finalizar').addEventListener('click', () => {
 
     // Filtra atletas com tempo, ordena por tempo e pega os top 3
     const ranking = atletas.filter(a => a.tempo).sort((a,b) => a.seg - b.seg).slice(0,3);
+    if (ranking.length === 0) {
+        showModal('Nenhum tempo registrado para atletas.');
+        return;
+    }
     const res = document.getElementById('resultados');
 
     // Cria o elemento do pódio
@@ -170,7 +215,12 @@ document.getElementById('finalizar').addEventListener('click', () => {
     });
 
     // Salva os dados atualizados no localStorage
-    localStorage.setItem('atletas', JSON.stringify(atletas));
+    try {
+        localStorage.setItem('atletas', JSON.stringify(atletas));
+    } catch (e) {
+        console.error('Erro ao salvar no localStorage:', e);
+        showModal('Erro ao salvar resultados.');
+    }
 });
 
 // Inicializa a lista e os tempos ao carregar a página
