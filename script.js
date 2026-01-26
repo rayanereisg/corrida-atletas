@@ -1,6 +1,24 @@
 // Aguarda o DOM carregar completamente antes de executar o código
 document.addEventListener('DOMContentLoaded', () => {
 
+// Função para mostrar modal de notificação
+function showModal(message) {
+    const modal = document.getElementById('modal');
+    const modalMessage = document.getElementById('modal-message');
+    modalMessage.textContent = message;
+    modal.setAttribute('aria-hidden', 'false');
+    document.getElementById('modal-close').focus();
+}
+
+// Função para fechar modal
+function closeModal() {
+    const modal = document.getElementById('modal');
+    modal.setAttribute('aria-hidden', 'true');
+}
+
+// Evento para fechar modal
+document.getElementById('modal-close').addEventListener('click', closeModal);
+
 // Inicializa a lista de atletas a partir do localStorage, ou uma lista vazia se não houver dados
 let atletas = JSON.parse(localStorage.getItem('atletas')) || [];
 
@@ -32,13 +50,13 @@ document.getElementById('cadastro-form').addEventListener('submit', e => {
 
     // Validação: Verifica se os campos obrigatórios estão preenchidos
     if (!nome || !numeroPeito) {
-        alert('Por favor, preencha o nome e o número de peito.');
+        showModal('Por favor, preencha o nome e o número de peito.');
         return;
     }
 
     // Verifica se o número de peito já existe
     if (atletas.some(a => a.numeroPeito == numeroPeito)) {
-        alert('Número de peito já existe');
+        showModal('Número de peito já existe');
         return;
     }
 
@@ -49,7 +67,7 @@ document.getElementById('cadastro-form').addEventListener('submit', e => {
     localStorage.setItem('atletas', JSON.stringify(atletas));
 
     // Mostra mensagem de sucesso
-    alert('Atleta cadastrado com sucesso!');
+    showModal('Atleta cadastrado com sucesso!');
 
     // Atualiza a lista e os inputs de tempos
     atualizarLista();
@@ -69,6 +87,7 @@ function atualizarLista() {
     // Para cada atleta, cria um item de lista com botão de excluir
     atletas.forEach((a, i) => {
         const li = document.createElement('li');
+        li.setAttribute('role', 'listitem');
 
         const texto = document.createElement('span');
         texto.textContent = `${a.nome} | Nº Peito: ${a.numeroPeito} | Distância: ${a.distancia}`;
@@ -76,6 +95,7 @@ function atualizarLista() {
         const btnExcluir = document.createElement('button');
         btnExcluir.textContent = '🗑️';
         btnExcluir.title = 'Excluir atleta';
+        btnExcluir.setAttribute('aria-label', `Excluir atleta ${a.nome}`);
         btnExcluir.className = 'btn-excluir';
         btnExcluir.addEventListener('click', () => {
             if (confirm(`Tem certeza que deseja excluir o atleta ${a.nome}?`)) {
@@ -101,15 +121,15 @@ function atualizarTempos() {
         div.innerHTML += `
             <div class="tempo-input">
                 <label>${a.nome} (${a.numeroPeito})</label>
-                ${criarSelect(`hora-${i}`, 23)} : ${criarSelect(`min-${i}`, 59)} : ${criarSelect(`seg-${i}`, 59)}
+                ${criarSelect(`hora-${i}`, 23, `Horas para ${a.nome}`)} : ${criarSelect(`min-${i}`, 59, `Minutos para ${a.nome}`)} : ${criarSelect(`seg-${i}`, 59, `Segundos para ${a.nome}`)}
             </div>
         `;
     });
 }
 
 // Função auxiliar para criar um select com opções de 0 a max
-function criarSelect(id, max) {
-    let html = `<select id="${id}">`;
+function criarSelect(id, max, ariaLabel) {
+    let html = `<select id="${id}" aria-label="${ariaLabel}">`;
     for (let j = 0; j <= max; j++) {
         html += `<option value="${j}">${j.toString().padStart(2, '0')}</option>`;
     }
