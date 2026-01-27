@@ -3,7 +3,7 @@
 // Descrição: Gerencia a atualização da interface, navegação e elementos visuais.
 // =====================================================================================
 
-import { getAtletas, removerAtleta } from './atletas.js';
+import { getAtletas, removerAtleta, salvarAtletas, validarTempo } from './atletas.js';
 import { showModal } from './modal.js';
 
 /**
@@ -110,12 +110,16 @@ function criarSelect(id, max, ariaLabel) {
 export function finalizarCorrida() {
     const atletas = getAtletas();
 
-    // Para cada atleta, obtém os valores dos selects e converte para segundos
+    // Para cada atleta, obtém os valores dos selects e valida
     atletas.forEach((a, i) => {
         const h = parseInt(document.getElementById(`hora-${i}`).value);
         const m = parseInt(document.getElementById(`min-${i}`).value);
         const s = parseInt(document.getElementById(`seg-${i}`).value);
         if (h || m || s) {
+            if (!validarTempo(h, m, s)) {
+                showModal(`Tempo inválido para ${a.nome}: valores devem ser positivos e minutos/segundos ≤ 59.`);
+                return;
+            }
             a.tempo = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
             a.seg = h * 3600 + m * 60 + s;
         }

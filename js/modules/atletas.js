@@ -1,7 +1,6 @@
-// =====================================================================================
+
 // MÓDULO: ATLETAS (GERENCIAMENTO DE DADOS)
 // Descrição: Gerencia o armazenamento, carregamento e validação de atletas.
-// =====================================================================================
 
 /**
  * Array que armazena a lista de atletas.
@@ -83,4 +82,20 @@ export function validarNumeroPeito(numeroPeito) {
  */
 export function validarNome(nome) {
     return nome.trim() !== '';
+}
+
+/**
+ * Valida se o tempo é possível (não negativo e dentro de limites razoáveis).
+ * @param {number} h - Horas.
+ * @param {number} m - Minutos.
+ * @param {number} s - Segundos.
+ * @returns {boolean} - True se válido, false caso contrário.
+ */
+export function validarTempo(h, m, s) {
+    if (h < 0 || m < 0 || s < 0 || m > 59 || s > 59) {
+        return false;
+    }
+    // Limite máximo: 10 horas para uma corrida (extremo, mas possível)
+    const totalSeg = h * 3600 + m * 60 + s;
+    return totalSeg > 0 && totalSeg <= 36000;
 }
