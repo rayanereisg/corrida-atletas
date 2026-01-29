@@ -33,6 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Manipula o envio do formulário de cadastro de atletas.
+     * Valida campos obrigatórios, adiciona o atleta ao armazenamento e atualiza a interface.
+     * Exibe um modal em caso de erro ou sucesso.
+     * @param {Event} e - Evento de submissão do formulário.
      */
     function cadastrarAtleta(e) {
         console.log('Formulário de cadastro submetido');

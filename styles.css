@@ -1,3 +1,11 @@
+/*
+    styles.css - Estilos da aplicação RunMonitor
+    Organização:
+    - Layout e responsividade
+    - Componentes: header, container, navegação, botões, seções, inputs de tempo, pódio e modal
+    - Use comentários por seção para facilitar manutenção
+*/
+
 * {
     box-sizing: border-box;
 }
