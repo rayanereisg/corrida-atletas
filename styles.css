@@ -241,11 +241,20 @@ li:hover {
     margin: 0;
     white-space: nowrap;
     font-weight: 500;
-    min-width: 200px;
+    /* Permite que o label encolha em layouts flexíveis para não empurrar os selects */
+    min-width: 0;
+    flex: 1 1 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .tempo-input select {
-    width: 60px;
+    /* Aumenta um pouco a largura e reduz o padding para evitar corte dos números */
+    width: 72px;
+    padding: 8px;
+    font-size: 1rem;
+    line-height: 1.2;
+    box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
