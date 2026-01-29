@@ -1,6 +1,13 @@
 
+import { showModal } from './modal.js';
+
 // MÓDULO: ATLETAS (GERENCIAMENTO DE DADOS)
 // Descrição: Gerencia o armazenamento, carregamento e validação de atletas.
+
+/**
+ * Versão dos dados salvos no localStorage. Incrementar quando houver mudanças de esquema.
+ */
+export const DATA_VERSION = 1;
 
 /**
  * Array que armazena a lista de atletas.
@@ -11,10 +18,32 @@ let atletas = [];
 
 /**
  * Carrega a lista de atletas do localStorage ou inicializa com array vazio.
+ * Suporta migração de formato antigo (array simples) para novo formato com versionamento.
  */
 export function carregarAtletas() {
     try {
-        atletas = JSON.parse(localStorage.getItem('atletas')) || [];
+        const raw = JSON.parse(localStorage.getItem('atletas'));
+        if (!raw) {
+            atletas = [];
+            return;
+        }
+
+        // Se for array antigo (legado), atualiza para novo formato
+        if (Array.isArray(raw)) {
+            atletas = raw;
+            salvarAtletas(); // migra para o formato versionado
+            return;
+        }
+
+        // Se for objeto com versionamento
+        if (raw && typeof raw === 'object' && 'version' in raw && 'data' in raw) {
+            // Se futuras versões exigirem migração, implementar aqui
+            atletas = raw.data || [];
+            return;
+        }
+
+        // Caso inesperado, fallback
+        atletas = [];
     } catch (e) {
         console.warn('Erro ao carregar localStorage, usando array vazio:', e);
         atletas = [];
@@ -22,11 +51,12 @@ export function carregarAtletas() {
 }
 
 /**
- * Salva a lista de atletas no localStorage.
+ * Salva a lista de atletas no localStorage usando o formato versionado.
  */
 export function salvarAtletas() {
     try {
-        localStorage.setItem('atletas', JSON.stringify(atletas));
+        const payload = { version: DATA_VERSION, data: atletas };
+        localStorage.setItem('atletas', JSON.stringify(payload));
     } catch (e) {
         console.error('Erro ao salvar no localStorage:', e);
         showModal('Erro ao salvar dados. Os dados podem não persistir.');

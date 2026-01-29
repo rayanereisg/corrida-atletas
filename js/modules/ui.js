@@ -4,6 +4,7 @@
 // =====================================================================================
 
 import { getAtletas, removerAtleta, salvarAtletas, validarTempo } from './atletas.js';
+import { computeRanking } from './ranking.js';
 import { showModal } from './modal.js';
 
 /**
@@ -125,8 +126,8 @@ export function finalizarCorrida() {
         }
     });
 
-    // Filtra atletas com tempo, ordena por tempo e pega os top 3
-    const ranking = atletas.filter(a => a.tempo).sort((a, b) => a.seg - b.seg).slice(0, 3);
+    // Calcula ranking usando o módulo de ranking
+    const ranking = computeRanking(atletas, 3);
     if (ranking.length === 0) {
         showModal('Nenhum tempo registrado para atletas.');
         return;

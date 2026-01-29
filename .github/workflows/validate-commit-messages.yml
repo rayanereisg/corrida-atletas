@@ -1,0 +1,27 @@
+name: Validate commit messages (Portuguese)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run commit message validation
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          GITHUB_EVENT_AFTER: ${{ github.event.after }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            RANGE="$PR_BASE_SHA..$PR_HEAD_SHA"
+          else
+            RANGE="$GITHUB_EVENT_BEFORE..$GITHUB_EVENT_AFTER"
+          fi
+          .github/scripts/validate-commits.sh "$RANGE"
