@@ -1,4 +1,13 @@
 
+/**
+ * Módulo: `atletas.js`
+ * Propósito: Gerencia a lista de atletas, persistência (localStorage),
+ * validações e migrações de dados quando necessário.
+ *
+ * Formato salvo (versionado): { version: number, data: Array<Object> }
+ *
+ * Cada atleta: { nome, numeroPeito, categoria, distancia, tempo, seg }
+ */
 import { showModal } from './modal.js';
 
 // MÓDULO: ATLETAS (GERENCIAMENTO DE DADOS)

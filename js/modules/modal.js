@@ -1,3 +1,8 @@
+/**
+ * Módulo: `modal.js`
+ * Responsável por exibir mensagens de notificação para o usuário.
+ * Fornece: showModal(message), closeModal(), configurarModal().
+ */
 // =====================================================================================
 // MÓDULO: MODAL (NOTIFICAÇÕES)
 // Descrição: Gerencia a exibição e fechamento de modais de notificação.

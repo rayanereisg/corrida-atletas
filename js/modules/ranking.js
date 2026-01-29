@@ -1,3 +1,8 @@
+/**
+ * Módulo: `ranking.js`
+ * Calcula e retorna o ranking de atletas com base no tempo em segundos (campo `seg`).
+ * Exporta: computeRanking(atletas, topN = 3) -> Array de atletas ordenados.
+ */
 // MÓDULO: RANKING
 // Descrição: Funções responsáveis por calcular o ranking de atletas.
 

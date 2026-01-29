@@ -1,3 +1,9 @@
+/**
+ * Módulo: `ui.js`
+ * Responsável por atualizar a interface, gerenciar navegação entre seções,
+ * renderizar listas de atletas, inputs de tempo e exibir resultados/pódio.
+ * Exporta funções: configurarNavegacao, atualizarLista, atualizarTempos, finalizarCorrida
+ */
 // =====================================================================================
 // MÓDULO: UI (INTERFACE DO USUÁRIO)
 // Descrição: Gerencia a atualização da interface, navegação e elementos visuais.
@@ -56,7 +62,8 @@ export function atualizarLista() {
 }
 
 /**
- * Exclui um atleta da lista após confirmação.
+ * Exclui um atleta da lista após confirmação do usuário.
+ * Atualiza a interface e os inputs de tempo após a remoção.
  * @param {number} index - O índice do atleta a ser excluído.
  */
 function excluirAtleta(index) {
@@ -91,6 +98,7 @@ export function atualizarTempos() {
 
 /**
  * Cria um elemento select com opções de 0 a max.
+ * Usa `padStart(2,'0')` para exibir valores com dois dígitos (00..max).
  * @param {string} id - O ID do select.
  * @param {number} max - O valor máximo para as opções.
  * @param {string} ariaLabel - O rótulo de acessibilidade.
