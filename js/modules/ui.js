@@ -85,11 +85,11 @@ export function atualizarTempos() {
 
     const atletas = getAtletas();
 
-    // Para cada atleta, adiciona selects para hora, minuto e segundo
+    // Lista de atletas com o nome, número de peito e distância
     atletas.forEach((a, i) => {
         div.innerHTML += `
             <div class="tempo-input">
-                <label>${a.nome} (${a.numeroPeito})</label>
+                <label>${a.nome} | ${a.numeroPeito} | ${a.distancia}  </label>
                 ${criarSelect(`hora-${i}`, 23, `Horas para ${a.nome}`)} : ${criarSelect(`min-${i}`, 59, `Minutos para ${a.nome}`)} : ${criarSelect(`seg-${i}`, 59, `Segundos para ${a.nome}`)}
             </div>
         `;
